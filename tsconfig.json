@@ -10,7 +10,7 @@
     "noImplicitReturns":  true,
     "skipLibCheck":     true,
     "outDir":           "./dist",
-    "rootDir":          "./src",
+    "rootDir":          ".",
     "baseUrl":          ".",
     "paths": {
       "@engine/*":   ["src/engine/*"],
