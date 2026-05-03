@@ -3,13 +3,14 @@
 // Other agents must NOT import from this file — use src/firebase/api.ts instead.
 
 import { initializeApp } from 'firebase/app'
-import { getAuth } from 'firebase/auth'
+import { getAuth, connectAuthEmulator } from 'firebase/auth'
 import {
   initializeFirestore,
   persistentLocalCache,
   persistentMultipleTabManager,
+  connectFirestoreEmulator,
 } from 'firebase/firestore'
-import { getStorage } from 'firebase/storage'
+import { getStorage, connectStorageEmulator } from 'firebase/storage'
 
 export const app = initializeApp({
   apiKey:            import.meta.env.VITE_FIREBASE_API_KEY,
@@ -30,3 +31,17 @@ export const db = initializeFirestore(app, {
     tabManager: persistentMultipleTabManager(),
   }),
 })
+
+// Call once before any SDK operations. Safe to call multiple times — guarded internally.
+let emulatorsConnected = false
+export function connectToEmulators(): void {
+  if (emulatorsConnected) return
+  emulatorsConnected = true
+  connectAuthEmulator(auth, 'http://127.0.0.1:9099', { disableWarnings: true })
+  connectFirestoreEmulator(db, '127.0.0.1', 8080)
+  connectStorageEmulator(storage, '127.0.0.1', 9199)
+}
+
+if (import.meta.env.DEV) {
+  connectToEmulators()
+}

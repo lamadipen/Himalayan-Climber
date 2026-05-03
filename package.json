@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:emulate": "concurrently --kill-others -n emulators,vite -c blue,green \"firebase emulators:start --only auth,firestore,storage\" \"vite\"",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "test": "vitest run",
@@ -27,6 +28,7 @@
     "@playwright/test": "^1.40.0",
     "@types/three": "^0.160.0",
     "@vitest/coverage-v8": "^1.0.0",
+    "concurrently": "^9.2.1",
     "firebase-admin": "^13.8.0",
     "jsdom": "^23.0.0",
     "typescript": "^5.3.0",
