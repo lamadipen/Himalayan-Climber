@@ -60,3 +60,50 @@ export const LAYOUT = {
   weatherY: 36,
   rightPad: 16,
 } as const
+
+// ─── Main menu ────────────────────────────────────────────────────────────────
+
+export const MENU_DEPTH = {
+  sky:     0,
+  stars:   1,
+  moon:    2,
+  farMtn:  3,    // snow caps live in the same Graphics object as farMtn
+  midMtn:  4,
+  nearMtn: 5,
+  ui:      10,   // titles, buttons
+  btnFg:   11,   // button labels above button bg
+} as const
+
+export const MENU_COLOR = {
+  // Sky and mountains
+  sky:        0x0a1628,
+  farMtn:     0x253448,
+  midMtn:     0x162033,
+  nearMtn:    0x0c1521,
+  snowCap:    0xe8f0f8,
+  moon:       0xf0e6c8,
+  moonShadow: 0x0a1628,   // same as sky — creates crescent cutout
+
+  // Title text
+  titleEn:    '#e8f4f8',
+  titleNe:    '#94b4c8',
+
+  // Buttons
+  btnBg:      0x1a3050,
+  btnBgHover: 0x2a4a70,
+  btnBgDown:  0x0f2035,
+  btnBorder:  0x4a90c4,
+  btnText:    '#c8dff0',
+  btnTextHvr: '#ffffff',
+
+  // Ko-fi link
+  kofi:       '#e05050',
+  kofiHover:  '#ff7070',
+} as const
+
+// Parallax shift multipliers per layer (px per unit of normalised pointer offset)
+export const PARALLAX = {
+  far:  { x: -6,  y: -2 },
+  mid:  { x: -13, y: -4 },
+  near: { x: -22, y: -7 },
+} as const
