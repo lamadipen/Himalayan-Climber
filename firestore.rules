@@ -2,20 +2,34 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Game saves — users can only access their own slots
+    // Game saves — user can only read/write their own slots 0–4
     match /saves/{docId} {
       allow read, write: if request.auth != null
         && docId.matches(request.auth.uid + '_slot[0-4]');
     }
 
-    // Player feedback — write-only (analyst writes, nobody reads via client)
+    // Leaderboard — anyone authenticated can read; write only your own entry
+    // Doc ID format: {mountain}_{uid}
+    match /leaderboard/{docId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null
+        && docId.matches('[a-z]+_' + request.auth.uid);
+    }
+
+    // Weather seed — read-only for clients; written by Cloud Function (admin SDK)
+    match /weather/{docId} {
+      allow read:  if request.auth != null;
+      allow write: if false;
+    }
+
+    // Player feedback — write-only (Player Analyst writes via admin SDK or authenticated client)
     match /feedback/{docId} {
       allow create: if request.auth != null
         && request.resource.data.keys().hasAll(['persona', 'build', 'event', 'location']);
       allow read: if false;
     }
 
-    // Default deny everything else
+    // Default deny
     match /{document=**} {
       allow read, write: if false;
     }

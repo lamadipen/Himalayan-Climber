@@ -94,3 +94,65 @@ All agents branch from `dev`, PR back to `dev`. Director merges `dev → main`.
 The Player Analyst writes to `docs/player-sessions.md` after each build.
 A summary of top issues is always kept under `## Player feedback` in README.md.
 The Game Designer must read player feedback before starting any new level or balance work.
+
+# CLAUDE.md override — Himalayan Climber
+> Paste this at the bottom of your root CLAUDE.md when working on this game.
+> It overrides generic game settings with Himalayan Climber specifics.
+
+---
+
+## Active game
+
+- **Title**: Himalayan Climber (हिमाली आरोही)
+- **GDD**: `docs/GDD.md`
+- **Balance**: `src/config/balance.ts` (use balance-additions.ts as your additions)
+- **Engine**: Phaser 3 (2D platformer)
+- **Milestone**: Week 1 — core movement + Firebase setup
+
+---
+
+## Key architectural decisions
+
+- **Altitude system**: `src/engine/AltitudeSystem.ts` — reads player Y, maps to metres, controls oxygen drain and speed modifiers
+- **Karma system**: `src/engine/KarmaSystem.ts` — global event bus listens for karma-add/karma-sub events from any scene or entity
+- **Weather**: `src/engine/WeatherSystem.ts` — reads daily seed from Firebase Realtime DB, deterministic RNG from seed
+- **Checkpoints**: `src/engine/CheckpointSystem.ts` — auto-saves to Firestore on touch, restores oxygen + ropes
+- **Level altitude map**: Defined in balance.ts LEVEL_ALTITUDE_SCALES — maps Phaser Y coordinate to real altitude
+
+---
+
+## Entity ownership
+
+| Entity | File | Owner |
+|---|---|---|
+| Karma (player) | `src/entities/Player.ts` | Lead Dev |
+| NPC climber | `src/entities/NPCClimber.ts` | Lead Dev |
+| Snow leopard | `src/entities/SnowLeopard.ts` | Lead Dev |
+| Avalanche | `src/entities/Avalanche.ts` | Lead Dev |
+| Yak | `src/entities/Yak.ts` | Lead Dev |
+| Kanchenjunga spirit | `src/entities/SpiritBoss.ts` | Lead Dev |
+
+---
+
+## Nepali language notes
+
+- All in-game dialogue has two versions: English and Nepali (Devanagari)
+- Language stored in player preference (Firestore saves/)
+- Prayer flag text must be actual Nepali script — do not substitute
+- Mountain names: always use Nepali name first, English in parentheses
+  - Everest → Sagarmatha (सगरमाथा)
+  - Kanchenjunga → कञ्चनजंघा
+  - Annapurna → अन्नपूर्णा
+  - Manaslu → मनास्लु
+  - Langtang → लाङटाङ
+
+---
+
+## Cultural accuracy rules (all agents)
+
+1. Sherpa culture is portrayed with respect — no stereotypes
+2. Prayer flags, monasteries, and spiritual elements are not "obstacles" — they are blessings
+3. The Kanchenjunga spirit is benevolent, not a villain — it guards the sacred summit
+4. Tibetan Buddhist and Hindu elements coexist naturally as they do in Nepal
+5. If uncertain about cultural accuracy, flag for director review rather than guessing
+
