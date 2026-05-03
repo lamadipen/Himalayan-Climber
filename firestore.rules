@@ -1,0 +1,23 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Game saves — users can only access their own slots
+    match /saves/{docId} {
+      allow read, write: if request.auth != null
+        && docId.matches(request.auth.uid + '_slot[0-4]');
+    }
+
+    // Player feedback — write-only (analyst writes, nobody reads via client)
+    match /feedback/{docId} {
+      allow create: if request.auth != null
+        && request.resource.data.keys().hasAll(['persona', 'build', 'event', 'location']);
+      allow read: if false;
+    }
+
+    // Default deny everything else
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
