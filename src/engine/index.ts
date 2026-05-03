@@ -1,3 +1,5 @@
-export { createGame, gameConfig } from './GameLoop'
-export { InputManager }           from './InputManager'
-export type { InputKey }          from './InputManager'
+export { createGame, gameConfig }  from './GameLoop'
+export { InputManager }            from './InputManager'
+export type { InputKey }           from './InputManager'
+export { AltitudeSystem }          from './AltitudeSystem'
+export type { AltitudeZone }       from './AltitudeSystem'
