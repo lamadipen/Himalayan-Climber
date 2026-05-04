@@ -136,6 +136,42 @@ export const SUMMIT_COLOR = {
   lbDefault:     '#c0d0e0',
 } as const
 
+// ─── Pause menu ───────────────────────────────────────────────────────────────
+
+export const PAUSE_DEPTH = {
+  overlay: 50,
+  panel:   55,
+  text:    56,
+  btnFg:   57,
+} as const
+
+export const PAUSE_COLOR = {
+  overlayFill: 0x000000,
+  panelBg:     0x0d1a2e,
+  panelBorder: 0x2a4060,
+  title:       '#c8dff0',
+  subtitle:    '#4a7090',
+} as const
+
+// ─── Game over screen ─────────────────────────────────────────────────────────
+
+export const GAMEOVER_DEPTH = {
+  bg:   0,
+  mtn:  1,
+  text: 5,
+  btns: 10,
+} as const
+
+export const GAMEOVER_COLOR = {
+  sky:        0x0d0d1a,
+  mtn:        0x060810,
+  title:      '#cc2222',
+  causeText:  '#c8dff0',
+  altColor:   '#74c0fc',
+  karmaColor: '#ffd700',
+  statLabel:  '#6a8090',
+} as const
+
 // ─── Parallax shift multipliers per layer (px per unit of normalised pointer offset)
 export const PARALLAX = {
   far:  { x: -6,  y: -2 },

@@ -36,11 +36,12 @@ export class GameScene extends Phaser.Scene {
   private avalanche!:       Avalanche
 
   // Set by ice-wall overlap callback; read + reset each update tick.
-  private iceWallNear    = false
-  private currentLevel   = 1
-  private elapsedMs      = 0
-  private npcsSaved      = 0
+  private iceWallNear     = false
+  private currentLevel    = 1
+  private elapsedMs       = 0
+  private npcsSaved       = 0
   private summitTriggered = false
+  private deathCause      = 'fall'
 
   constructor() {
     super({ key: 'GameScene' })
@@ -162,13 +163,25 @@ export class GameScene extends Phaser.Scene {
     // 9. Scene events
     this.events.once('player-died', this.onPlayerDied, this)
 
-    // Altitude HP drain — routes through Player so Entity death logic fires
+    // Altitude HP drain — routes through Player so Entity death logic fires.
+    // Also tracks oxygen as the death cause when O2 is depleted.
     this.events.on('altitude-hp-drain', (amount: number) => {
+      if ((this.altitudeSystem?.getOxygen() ?? 1) <= 0) this.deathCause = 'oxygen'
       this.player?.takeDamage(amount)
     }, this)
 
     // NPC saved counter — incremented whenever a climber is helped
     this.events.on('karma-help-climber', () => { this.npcsSaved++ }, this)
+
+    // Avalanche death cause — set on start, cleared when player survives
+    this.events.on('avalanche-start',   () => { this.deathCause = 'avalanche' }, this)
+    this.events.on('avalanche-cleared', () => { this.deathCause = 'fall' },      this)
+
+    // Generic hook for future entities (Yak, SpiritBoss, etc.)
+    this.events.on('set-death-cause', (cause: string) => { this.deathCause = cause }, this)
+
+    // ESC key — launch pause overlay
+    this.input.keyboard!.addKey('ESC').on('down', this.onEscKey, this)
 
     // 10. Camera
     this.cameras.main.startFollow(this.player, true, 0.1, 0.1)
@@ -270,12 +283,26 @@ export class GameScene extends Phaser.Scene {
     }
   }
 
+  private onEscKey(): void {
+    if (this.scene.isActive('PauseScene')) return
+    this.scene.launch('PauseScene', {
+      uid:          this.registry.get('uid') as string,
+      currentLevel: this.currentLevel,
+      karma:        this.karmaSystem?.getKarma() ?? 0,
+      npcsSaved:    this.npcsSaved,
+      timeSeconds:  Math.floor(this.elapsedMs / 1000),
+    })
+    this.scene.pause()
+  }
+
   private onPlayerDied(): void {
     this.cameras.main.fadeOut(500, 0, 0, 0)
     this.cameras.main.once('camerafadeoutcomplete', () => {
       this.scene.start('GameOverScene', {
-        score: this.registry.get('score') ?? 0,
-        karma: this.player.karma,
+        cause:       this.deathCause,
+        altitude:    this.altitudeSystem?.getCurrentAltitude() ?? 0,
+        karma:       this.karmaSystem?.getKarma() ?? 0,
+        timeSeconds: Math.floor(this.elapsedMs / 1000),
       })
     })
   }
@@ -285,5 +312,8 @@ export class GameScene extends Phaser.Scene {
     this.avalanche?.destroy()
     this.events.off('altitude-hp-drain')
     this.events.off('karma-help-climber')
+    this.events.off('avalanche-start')
+    this.events.off('avalanche-cleared')
+    this.events.off('set-death-cause')
   }
 }
