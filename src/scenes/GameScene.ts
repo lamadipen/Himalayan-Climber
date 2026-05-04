@@ -230,7 +230,7 @@ export class GameScene extends Phaser.Scene {
   // If found, creates an invisible physics zone; overlap fires onSummitReached().
   // Falls back to a thin strip at the top of the map (y < 64) if no object exists.
   private buildSummitZone(spawns: Phaser.Types.Tilemaps.TiledObject[]): void {
-    const summitObj = spawns.find(o => o.name === 'summit')
+    const summitObj = spawns.find(o => o.name === 'exit')
 
     if (summitObj && summitObj.x !== undefined && summitObj.y !== undefined) {
       const w = summitObj.width  ?? 128
