@@ -370,6 +370,9 @@ export class MainMenuScene extends Phaser.Scene {
   // Snow caps live in farLayer so they move automatically.
 
   private updateParallax(): void {
+    // Guard: create() is async — update() may fire before buildBackground() runs
+    if (!this.farLayer) return
+
     const cx = this.scale.width  / 2
     const cy = this.scale.height / 2
     const px = (this.input.activePointer.x - cx) / cx

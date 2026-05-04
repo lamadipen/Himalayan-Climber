@@ -42,6 +42,8 @@ export function connectToEmulators(): void {
   connectStorageEmulator(storage, '127.0.0.1', 9199)
 }
 
-if (import.meta.env.DEV) {
+// Set VITE_USE_EMULATORS=true in .env.local to use local Firebase emulators.
+// Omitting the var (the default) connects directly to the real Firebase project.
+if (import.meta.env.VITE_USE_EMULATORS === 'true') {
   connectToEmulators()
 }
