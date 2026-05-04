@@ -5,6 +5,7 @@ import { MainMenuScene }    from '../scenes/MainMenuScene'
 import { GameScene }        from '../scenes/GameScene'
 import { GameOverScene }    from '../scenes/GameOverScene'
 import { LeaderboardScene } from '../scenes/LeaderboardScene'
+import { SummitScene }      from '../scenes/SummitScene'
 
 export const gameConfig: Phaser.Types.Core.GameConfig = {
   type:            Phaser.AUTO,
@@ -27,6 +28,7 @@ export const gameConfig: Phaser.Types.Core.GameConfig = {
     GameScene,
     GameOverScene,
     LeaderboardScene,
+    SummitScene,
   ],
 }
 

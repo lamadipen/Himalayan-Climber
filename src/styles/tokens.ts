@@ -101,7 +101,42 @@ export const MENU_COLOR = {
   kofiHover:  '#ff7070',
 } as const
 
-// Parallax shift multipliers per layer (px per unit of normalised pointer offset)
+// ─── Summit screen ────────────────────────────────────────────────────────────
+
+export const SUMMIT_DEPTH = {
+  bg:      0,
+  panel:   5,
+  text:    6,
+  badge:   7,
+  overlay: 10,
+} as const
+
+export const SUMMIT_COLOR = {
+  // Background
+  sky:           0x0d1a30,
+  horizonGlow:   0xb04000,   // warm dawn orange fading up from horizon
+  mtnSilhouette: 0x080f1c,
+
+  // Info panels
+  panelBg:       0x0d1a2e,
+  panelBorder:   0x2a4060,
+
+  // Header
+  headerGold:    '#f0c060',
+
+  // Stat rows
+  timeColor:     '#e8f4f8',
+  karmaColor:    '#ffd700',
+  npcColor:      '#90ee90',
+  newRecord:     '#ffd700',
+  rankColor:     '#94b4c8',
+
+  // Leaderboard
+  lbHighlight:   '#74c0fc',   // current player's row
+  lbDefault:     '#c0d0e0',
+} as const
+
+// ─── Parallax shift multipliers per layer (px per unit of normalised pointer offset)
 export const PARALLAX = {
   far:  { x: -6,  y: -2 },
   mid:  { x: -13, y: -4 },

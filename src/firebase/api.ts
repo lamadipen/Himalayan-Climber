@@ -176,6 +176,14 @@ export function watchLeaderboard(
   })
 }
 
+// Returns the player's existing personal-best time (seconds) for a mountain,
+// or null if they have never summited it. Used by SummitScene to detect new records.
+export async function getPersonalBestTime(uid: string, mountain: string): Promise<number | null> {
+  const snap = await getDoc(doc(db, 'leaderboard', `${mountain}_${uid}`))
+  if (!snap.exists()) return null
+  return snap.data().time as number
+}
+
 // Returns 1-based rank; returns -1 if the player has no entry for this mountain
 export async function getPlayerRank(uid: string, mountain: string): Promise<number> {
   const playerSnap = await getDoc(doc(db, 'leaderboard', `${mountain}_${uid}`))
