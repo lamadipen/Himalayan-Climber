@@ -70,7 +70,12 @@ export class GameScene extends Phaser.Scene {
     const uid = this.registry.get('uid') as string
 
     // 1. Load Firebase save
-    const save = await loadGame(uid, 0)
+    let save = null
+    try {
+      save = await loadGame(uid, 0)
+    } catch {
+      // Proceed with defaults if Firestore is unavailable
+    }
     this.currentLevel   = save?.currentLevel ?? 1
     this.npcsSaved      = 0
     this.elapsedMs      = 0
@@ -116,25 +121,8 @@ export class GameScene extends Phaser.Scene {
     this.player = new Player(this, spawnX, spawnY, uid)
     this.player.setDepth(5)
 
-    // 4. Engine systems
-    this.karmaSystem   = KarmaSystem.create(this)
-    this.altitudeSystem = new AltitudeSystem(this, this.currentLevel, this.player)
-    this.weatherSystem  = new WeatherSystem(this, this.player)
-    await this.weatherSystem.init()
-
-    // 5. HUD (created after systems so it can reference them)
-    this.hud = new GameHUD(this, this.player)
-
-    // 6. Avalanche (listens to weather-changed event internally)
-    this.avalanche = new Avalanche(
-      this,
-      this.player,
-      this.safeZoneLayer,
-      this.map.widthInPixels,
-      this.map.heightInPixels,
-    )
-
-    // 7. Physics colliders + overlaps
+    // 4. Physics colliders + overlaps — wired IMMEDIATELY after player creation
+    //    so gravity cannot push the player through the floor during async inits.
     this.physics.add.collider(this.player, this.groundLayer)
 
     if (this.hazardLayer) {
@@ -156,6 +144,24 @@ export class GameScene extends Phaser.Scene {
         this,
       )
     }
+
+    // 5. Engine systems
+    this.karmaSystem    = KarmaSystem.create(this)
+    this.altitudeSystem = new AltitudeSystem(this, this.currentLevel, this.player)
+    this.weatherSystem  = new WeatherSystem(this, this.player)
+    await this.weatherSystem.init()
+
+    // 6. HUD (created after systems so it can reference them)
+    this.hud = new GameHUD(this, this.player)
+
+    // 7. Avalanche (listens to weather-changed event internally)
+    this.avalanche = new Avalanche(
+      this,
+      this.player,
+      this.safeZoneLayer,
+      this.map.widthInPixels,
+      this.map.heightInPixels,
+    )
 
     // 8. Summit trigger zone — object named 'summit' in SpawnPoints layer
     this.buildSummitZone(spawns)
@@ -196,6 +202,7 @@ export class GameScene extends Phaser.Scene {
 
   update(_time: number, delta: number): void {
     if (!this.player?.active || this.summitTriggered) return
+    if (!this.hud || !this.avalanche) return  // create() still awaiting weatherSystem.init()
 
     this.elapsedMs += delta
 
