@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Himalayan Climber — A Sherpa's Journey</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #050510;
+      overflow: hidden;
+      font-family: 'Georgia', 'Times New Roman', serif;
+      user-select: none;
+    }
+
+    #canvas {
+      display: block;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    /* ── Loading Screen ── */
+    #loading {
+      position: fixed; inset: 0;
+      background: linear-gradient(160deg, #050510 0%, #0d0525 50%, #050d20 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      z-index: 9999;
+      transition: opacity 0.8s ease;
+    }
+    #loading.hidden { opacity: 0; pointer-events: none; }
+
+    #loading-title {
+      font-size: clamp(2rem, 6vw, 3.5rem);
+      letter-spacing: 0.35em;
+      color: #FFD700;
+      text-shadow: 0 0 40px rgba(255,200,0,0.5);
+      margin-bottom: 0.4rem;
+    }
+    #loading-subtitle {
+      font-size: clamp(0.8rem, 2vw, 1.1rem);
+      color: #aaa;
+      letter-spacing: 0.4em;
+      margin-bottom: 2.5rem;
+    }
+    #loading-bar-wrap {
+      width: min(320px, 80vw);
+      height: 3px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    #loading-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #CC2200, #FF6600);
+      border-radius: 2px;
+      transition: width 0.4s ease;
+    }
+    #loading-text {
+      margin-top: 1rem;
+      color: #555;
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+    }
+
+    /* ── Overlays (always present, pointer-events: none) ── */
+    #vignette {
+      position: fixed; inset: 0;
+      pointer-events: none;
+      background: radial-gradient(ellipse at center,
+        transparent 45%, rgba(0,0,0,0.55) 100%);
+      z-index: 10;
+    }
+
+    #altitude-overlay {
+      position: fixed; inset: 0;
+      pointer-events: none;
+      background: rgba(80, 120, 220, 0);
+      z-index: 11;
+      transition: background 1.5s ease;
+    }
+
+    #screen-blur {
+      position: fixed; inset: 0;
+      pointer-events: none;
+      backdrop-filter: blur(0px);
+      z-index: 12;
+      transition: backdrop-filter 1s ease;
+    }
+
+    /* ── HUD ── */
+    #hud {
+      position: fixed; inset: 0;
+      pointer-events: none;
+      z-index: 20;
+      display: none;
+    }
+
+    /* ── UI Layer (menus, screens) ── */
+    #ui {
+      position: fixed; inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 30;
+    }
+  </style>
+</head>
+<body>
+  <div id="loading">
+    <div id="loading-title">HIMALAYAN CLIMBER</div>
+    <div id="loading-subtitle">A SHERPA'S JOURNEY</div>
+    <div id="loading-bar-wrap">
+      <div id="loading-bar"></div>
+    </div>
+    <div id="loading-text">Initializing physics engine…</div>
+  </div>
+
+  <canvas id="canvas"></canvas>
+
+  <div id="vignette"></div>
+  <div id="altitude-overlay"></div>
+  <div id="screen-blur"></div>
+  <div id="hud"></div>
+  <div id="ui"></div>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
